@@ -1,0 +1,74 @@
+{%extends 'manage/base.html' %}
+
+{%block content%}
+
+<h1>
+    配置
+</h1>
+
+<div class="mws-panel grid_4">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-check">添加新的生产主机</span>
+    </div>
+    <div class="mws-panel-body">
+        <form id="mws-validate" class="mws-form" action="{{url_for('ma_config_addsever')}}" method="post">
+            <div id="mws-validate-error" class="mws-form-message error" style="display:none;"></div>
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>服务器标识符</label>
+                    <div class="mws-form-item large">
+                        <input type="text" name="serverID" class="mws-textinput required" />
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>Url</label>
+                    <div class="mws-form-item large">
+                        <input type="text" name="serverUrl" class="mws-textinput required url" />
+                    </div>
+                </div>
+                <div class="mws-form-row">
+                    <label>描述</label>
+                    <div class="mws-form-item large">
+                        <input type="text" name="serverDesc" class="mws-textinput required" />
+                    </div>
+                </div>
+            </div>
+            <div class="mws-button-row">
+                <input type="submit" class="mws-button red" value="添加服务器"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mws-panel grid_4">
+    <div class="mws-panel-header">
+        <span class="mws-i-24 i-list">生产服务器</span>
+    </div>
+    <div class="mws-panel-body">
+        <form class="mws-form" action="{{url_for('ma_config_deletesever')}}" method="post">
+            <div class="mws-form-inline">
+                <div class="mws-form-row">
+                    <label>已添加的生产服务器</label>
+                    <br/>
+                    <div class="mws-form-item large">
+                        <div class="mws-dualbox clearfix">
+                            <div class="mws-dualbox-col12">
+                                <select id="box1View" multiple="multiple" size="8" name="selectedSever">
+                                    {% for serverInfo in getAllSevers()%}
+                                        <option value="{{serverInfo.serverID}}" >Sever{{serverInfo.serverID}}:{{serverInfo.desc[:20]+'....'}} Url:{{serverInfo.url}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mws-button-row">
+                <input type="submit" class="mws-button red" value="删除选中"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{%endblock%}
