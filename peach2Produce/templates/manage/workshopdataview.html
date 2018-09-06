@@ -161,49 +161,19 @@ chart = Highcharts.stockChart('weldingchart', {
 		}],
 		series : [{
 				name : '电压',
-				data : (function () {
-						// generate an array of random data
-						var data = [], time = (new Date()).getTime(), i;
-						for (i = -999; i <= 0; i += 1) {
-								data.push([
-										time + i * 1000,
-										0
-								]);
-						}
-						return data;
-				}()) ,
+				data :  ({{ thousandData['v'] }}),
 				yAxis : 0,
 		        color : '#7cb5ec'
 		},
 		{
 				name : '电流',
-				data : (function () {
-						// generate an array of random data
-						var data = [], time = (new Date()).getTime(), i;
-						for (i = -999; i <= 0; i += 1) {
-								data.push([
-										time + i * 1000,
-										0
-								]);
-						}
-						return data;
-				}()) ,
+				data : ({{ thousandData['e'] }}),
 				yAxis : 1,
 		        color : '#f7a35c'
 		},
 		{
 				name : '温度',
-				data : (function () {
-						// generate an array of random data
-						var data = [], time = (new Date()).getTime(), i;
-						for (i = -999; i <= 0; i += 1) {
-								data.push([
-										time + i * 1000,
-										0
-								]);
-						}
-						return data;
-				}()),
+				data : ({{ thousandData['t'] }}),
 				yAxis : 2,
 		        color : '#90ed7d'
 		}]

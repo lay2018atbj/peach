@@ -5,6 +5,7 @@ import json
 from datamodels import CollectedDatas, CollectedDataSeria
 from models import RobotInfo, AgvPos
 import datetime
+import time
 
 
 @application.route('/ma_workshorp/overview')
@@ -19,7 +20,20 @@ def ma_workshop_overview():
 
 @application.route('/ma_workshop/dataview/<int:id>')
 def ma_workshop_dataview(id):
-    return render_template('manage/workshopdataview.html', titlename='数据视图', id=id)
+    data = CollectedDatas.query.filter_by(devid=application.config['DEVICES'][id]['uniqueid']).limit(1000).all()
+    vdatas = []
+    edatas = []
+    tdatas = []
+    for col in data[::-1]:
+        vdatas.append([time.mktime(col.time.timetuple())*1000, col.voltage])
+        edatas.append([time.mktime(col.time.timetuple())*1000, col.electricity])
+        tdatas.append([time.mktime(col.time.timetuple())*1000, col.temperature])
+    data = dict()
+    data['v'] = vdatas
+    data['e'] = edatas
+    data['t'] = tdatas
+    return render_template('manage/workshopdataview.html', titlename='数据视图', id=id, thousandData=data)
+
 
 
 @application.route('/ma_workshop/getCollectedDatas/<int:id>')
