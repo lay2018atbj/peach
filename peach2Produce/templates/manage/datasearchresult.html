@@ -12,7 +12,7 @@
 
 <div class="mws-panel grid_8" >
     <div class="mws-panel-header">
-        <span class="mws-i-24 i-table-1">数据实时显示</span>
+        <span class="mws-i-24 i-table-1">历史数据 {{reTime['startTime']}} - {{reTime['endTime']}}</span>
     </div>
     <div class="mws-panel-body">
         <div class="mws-panel-toolbar top clearfix">
@@ -82,29 +82,7 @@ Highcharts.setOptions({
 // Create the chart
 chart = Highcharts.stockChart('weldingchart', {
 		chart : {
-			    type: 'spline',
-				events : {
-						load : function () {
-								// set up the updating of the chart each second
-								var seriesE = this.series[0];
-								var seriesV = this.series[1];
-								var seriesT = this.series[2];
-								setInterval(function () {
-								$.ajax({
-                                    url: "{{url_for('ma_workshop_getCollectedDatas',id=id)}}",
-                                    type:'GET',
-                                    success: function(datas) {
-                                    datas=JSON.parse(datas);
-                                     var x = (new Date(datas['time'])).getTime(); // current time
-									 seriesE.addPoint([x, datas['e']], true, true);
-									 seriesV.addPoint([x, datas['v']], true, true);
-									 seriesT.addPoint([x, datas['t']], true, true);
-                                    },
-                                     cache: false
-                                });
-								}, 1000);
-						}
-				}
+			    type: 'spline'
 		},
 			rangeSelector: {
 				buttons: [{
@@ -123,7 +101,7 @@ chart = Highcharts.stockChart('weldingchart', {
 				selected: 0
 		},
 		title : {
-				text : "{{config['DEVICES'][id]['name']}} 的采集数据<br/>机器人状态:{{config['DEVICES'][id]['produce_status']}}"
+				text : "{{config['DEVICES'][id]['name']}} 的历史采集数据<br/>"
 		},
 		tooltip: {
 				split: false
@@ -211,26 +189,23 @@ chart = Highcharts.stockChart('weldingchart', {
 		}],
 		series : [{
 				name : '电压',
-				data :  ({{ thousandData['v'] }}),
+				data :  ({{ reData['v'] }}),
 				yAxis : 0,
 		        color : '#7cb5ec'
 		},
 		{
 				name : '电流',
-				data : ({{ thousandData['e'] }}),
+				data : ({{ reData['e'] }}),
 				yAxis : 1,
 		        color : '#f7a35c'
 		},
 		{
 				name : '温度',
-				data : ({{ thousandData['t'] }}),
+				data : ({{ reData['e'] }}),
 				yAxis : 2,
 		        color : '#90ed7d'
 		}]
 });
-
-
-
 
 </script>
 {%endblock %}
