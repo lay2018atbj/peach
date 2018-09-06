@@ -36,9 +36,10 @@ chart = Highcharts.stockChart('weldingchart', {
 				events : {
 						load : function () {
 								// set up the updating of the chart each second
-								var seriesV = this.series[0];
-								var seriesE = this.series[1];
-								var seriesT = this.series[2];
+								var seriesV  = this.series[0];
+								var seriesE  = this.series[1];
+								var seriesT  = this.series[2];
+								var theTitle = this.title.textStr ;
 								setInterval(function () {
 								$.ajax({
                                     url: "{{url_for('ma_workshop_getCollectedDatas',id=id)}}",
@@ -49,6 +50,9 @@ chart = Highcharts.stockChart('weldingchart', {
 									 seriesE.addPoint([x, datas['e']], true, true);
 									 seriesV.addPoint([x, datas['v']], true, true);
 									 seriesT.addPoint([x, datas['t']], true, true);
+
+
+
                                     },
                                      cache: false
                                 });
