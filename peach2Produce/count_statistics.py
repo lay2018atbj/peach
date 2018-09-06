@@ -14,8 +14,8 @@ def countTheStatistics():
     lastData={}
     for id,info in application.config['DEVICES'].items():
         lastData[id]={}
-        lastData[id]['lastcd']=CollectedDatas.query.filter_by(devid=info['uniqueid']).first()
-        lastData[id]['timer']=time.time()
+        lastData[id]['lastcd']= CollectedDatas.query.filter_by(devid=info['uniqueid']).first()
+        lastData[id]['timer'] = time.time()
 
     while True:
         todayCost = Cost.query.filter_by(date=date.today()).first()

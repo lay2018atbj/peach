@@ -15,52 +15,25 @@
         <span class="mws-i-24 i-table-1">数据实时显示</span>
     </div>
     <div class="mws-panel-body">
-        <div class="mws-panel-toolbar top clearfix">
-            <ul>
-                <li><a href="#" class="mws-ic-16 mws-ic-16 ic-edit" onclick="showPopup()">查询历史记录</a></li>
-                <!--<li><a href="#" class="mws-ic-16 ic-cross" onclick="removeCheck()">删除</a></li>
-                <li><a href="#" class="mws-ic-16 ic-edit"  onclick="updateCheck()">编辑</a></li>
-                <li><a href="#" class="mws-ic-16 ic-arrow-refresh" onclick="window.location.reload()">刷新</a></li>-->
-            </ul>
-        </div>
-        <div id="white_content_pop" class="white_content">
-            <div class="mws-panel-header">
-                <span class="mws-i-24 i-check">查找条件</span>
-            </div>
-            <div class="mws-panel-body">
-                <form id="mws-validate" class="mws-form" action="{{url_for('ma_workshop_searchHistoryDatas')}}"
-                      method="post">
-                    <div id="mws-validate-error" class="mws-form-message error" style="display:none;"></div>
-                    <div class="mws-form-inline">
-                        <div class="mws-form-row">
-                            <label>设备ID</label>
-                            <div class="mws-form-item large">
-                                <input type="text" name="devId" class="mws-textinput required" value="{{id}}"/>
-                            </div>
-                        </div>
-                        <div class="mws-form-row">
-                            <label>起始时间点</label>
-                            <div class="mws-form-item large">
-                                <input type="text" name="startTime" class="mws-textinput required"/>
-                            </div>
-                        </div>
-                        <div class="mws-form-row">
-                            <label>结束时间点</label>
-                            <div class="mws-form-item large">
-                                <input type="text" name="endTime" class="mws-textinput"/>
-                            </div>
-                        </div>
+            <div class="mws-panel-content">
+                  <form class="mws-form" action="{{url_for('ma_workshop_searchHistoryDatas')}}" method="post">
+                        <label>设备数字序号</label>
+                        <input type="text" name="devId" class="mws-textinput required" value="{{id}}"/>
 
-                        <div class="mws-button-row">
-                            <input type="submit" class="mws-button green" value="查询"/>
-                            <input type="button" class="mws-button orange" onclick="closePopup()" value="取消"/>
-                        </div>
-                    </div>
-                </form>
+                        <label>起始时间点</label>
+                        <input type="datetime-local" name="startTime" class="mws-textinput mws-datepicker hasDatepicker"/>
+
+                        <label>结束时间点</label>
+                        <input type="datetime-local" name="endTime" class="mws-textinput mws-datepicker hasDatepicker "/>
+
+                        <input type="submit" class="mws-button green" value="查询"/>
+                 </form>
+
             </div>
-        </div>
-        <div class="mws-panel-content" style="min-height:550px" id="weldingchart">
-        </div>
+            <div class="mws-panel-content" style="min-height:550px" id="weldingchart" />
+    </div>
+
+
 
     </div>
 </div>
@@ -211,9 +184,10 @@ chart = Highcharts.stockChart('weldingchart', {
 		}],
 		series : [{
 				name : '电压',
-				data :  ({{ thousandData['v'] }}),
+                data :  ({{ thousandData['v'] }}),
 				yAxis : 0,
-		        color : '#7cb5ec'
+		        color : '#7cb5ec' ,
+
 		},
 		{
 				name : '电流',
