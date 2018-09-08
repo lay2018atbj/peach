@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from app import db,application
 import threading
-from models import StatisticalProduceDatas,ProductInfo,StatisticalWorkTimeDatas,DeviceInfo,Cost
+from models import StatisticalProduceDatas,ProductControlInfo,StatisticalWorkTimeDatas,DeviceInfo,Cost
 from datamodels import CollectedDatas
 from datetime import datetime,timedelta,date
 from sqlalchemy import func,and_
@@ -36,19 +36,19 @@ def countTheStatistics():
             lastData[id]['timer'] = time.time()
 
         #先统计产品信息
-        info = ProductInfo.query.first()
+        info = ProductControlInfo.query.first()
         #devIds=list(set(db.session.query(DevicesInfo.devId).all()))
         devIds=DeviceInfo.query.filter(DeviceInfo.status=='normal').all()
         if info:
             startTime = datetime.strptime(datetime.now().strftime('%Y-%m-%d'), '%Y-%m-%d')  # 去除具体的小时分秒
             delta = timedelta(days=1)
-            query = ProductInfo.query.filter(ProductInfo.beginTime.between(startTime, startTime + delta))
-            finiworks = len(query.filter(ProductInfo.status == 'FINISHED').all())
-            cancelworks = len(query.filter(ProductInfo.status == 'CANCELED').all())
-            procqulified = len(query.filter(ProductInfo.processEval == 'QUALIFIED').all())
-            procunqulified = len(query.filter(ProductInfo.processEval == 'UNQUALIFIED').all())
-            requlified = len(query.filter(ProductInfo.resultEval == 'QUALIFIED').all())
-            reunqulified = len(query.filter(ProductInfo.resultEval == 'UNQUALIFIED').all())
+            query = ProductControlInfo.query.filter(ProductControlInfo.beginTime.between(startTime, startTime + delta))
+            finiworks = len(query.filter(ProductControlInfo.status == 'FINISHED').all())
+            cancelworks = len(query.filter(ProductControlInfo.status == 'CANCELED').all())
+            procqulified = len(query.filter(ProductControlInfo.processEval == 'QUALIFIED').all())
+            procunqulified = len(query.filter(ProductControlInfo.processEval == 'UNQUALIFIED').all())
+            requlified = len(query.filter(ProductControlInfo.resultEval == 'QUALIFIED').all())
+            reunqulified = len(query.filter(ProductControlInfo.resultEval == 'UNQUALIFIED').all())
             re=StatisticalProduceDatas.query.filter(StatisticalProduceDatas.date==startTime).first()
             if not re:
                 db.session.add(StatisticalProduceDatas(startTime, finiworks, cancelworks,procqulified, procunqulified, requlified, reunqulified))

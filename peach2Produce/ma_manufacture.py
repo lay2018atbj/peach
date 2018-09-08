@@ -2,7 +2,7 @@ from app import application, db
 import socket
 import threading
 from datamodels import CollectedDatas
-from models import ProductInfo
+from models import ProductControlInfo
 import time
 import datetime
 import recordworktime  # 导入记录采集设备和机器人工作时间的模块
@@ -30,9 +30,9 @@ def ma_manufacture_begin():
     begin_time = datetime.datetime.now()
     end_time = datetime.date(2100, 1, 1)
 
-    product = ProductInfo.query.filter_by(productId=product_id).first()
+    product = ProductControlInfo.query.filter_by(productId=product_id).first()
     if not product:
-        new_product = ProductInfo(product_id, technique_id, status, process_eval, result_eval, desc, begin_time,
+        new_product = ProductControlInfo(product_id, technique_id, status, process_eval, result_eval, desc, begin_time,
                                   end_time)
         new_product.save()
     else:
@@ -62,7 +62,7 @@ def ma_manufacture_end():
     status = 'FINISHED'
     end_time = datetime.datetime.now()
 
-    product = ProductInfo.query.filter_by(productId=product_id).first()
+    product = ProductControlInfo.query.filter_by(productId=product_id).first()
     if not product:
         pass
     else:

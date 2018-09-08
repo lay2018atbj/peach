@@ -15,7 +15,7 @@ import ma_workshop_overall  # 全局视图
 import ma_manufacture  # 生产产品
 import verify  # 导入验证模块 主要是请求的权限验证
 import agv
-
+import callback_signal_function
 ################################基础内容全部加载完毕################################
 
 # 初始化配置

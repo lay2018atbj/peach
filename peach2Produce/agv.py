@@ -88,7 +88,6 @@ def getAgvPos():
     except Exception as e:
         print(e)
 
-    print('hello 1')
     while 1:
         try:
             conn, addr = s.accept()  # 接受TCP连接，并返回新的套接字与IP地址
@@ -110,6 +109,5 @@ def getAgvPos():
 
 
 def getAgvData():
-    print('hello')
     t = threading.Thread(target=getAgvPos)
     t.start()

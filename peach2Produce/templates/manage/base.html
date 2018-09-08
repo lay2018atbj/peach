@@ -32,7 +32,7 @@
 
 
     <!--add by lay -->
-      <link rel="stylesheet" type="text/css" href="/static/manage/css/pop-layout.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="/static/manage/css/pop-layout.css" media="screen"/>
     <!--end -->
 
     <!-- JavaScript Plugins -->
@@ -65,12 +65,12 @@
 
     <script type="text/javascript" src="/static/manage/js/mws.js"></script>
 
-   <!-- <script type="text/javascript" src="/static/manage/js/demo.js"></script>
+    <!-- <script type="text/javascript" src="/static/manage/js/demo.js"></script>
 
-    <script type="text/javascript" src="/static/manage/js/themer.js"></script>
+     <script type="text/javascript" src="/static/manage/js/themer.js"></script>
 
-    <script type="text/javascript" src="/static/manage/js/demo.charts.js"></script>
-    -->
+     <script type="text/javascript" src="/static/manage/js/demo.charts.js"></script>
+     -->
 
     <script type="text/javascript" src="/static/manage/js/demo.tabullet.js"></script>
 
@@ -312,7 +312,6 @@
                 </a></li>
 
 
-
                 <li
                         {% if titlename=="车间概况" %}
                         class="active"
@@ -332,11 +331,11 @@
                 >
                     <a href="#" class="mws-i-24 i-table-1">信息查询<span class="mws-nav-tooltip">100+</span></a>
                     <ul>
-                        <!--li><a href="{{url_for('ma_produceinfo_searchinfo')}}" >
-                    生产查询
-                        </a></li> -->
-                          <li><a href="{{url_for('ma_techniqueinfo_searchinfo')}}" >
-                    工艺查询
+                        <li><a href="{{url_for('ma_produceinfo_searchinfo')}}">
+                            生产查询
+                        </a></li>
+                        <li><a href="{{url_for('ma_techniqueinfo_searchinfo')}}">
+                            工艺查询
                         </a></li>
                     </ul>
                 </li>

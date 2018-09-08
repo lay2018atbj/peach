@@ -142,7 +142,7 @@ class SearchInfoForm:
                                   )
 
     def getSearchResults(self):
-        return ProductInfo.search(self)
+        return ProductControlInfo.search(self)
 
 
 # 用于生产信息查询form的模型
@@ -169,8 +169,9 @@ class SearchTechniqueInfoForm:
         return techniqueInfo.search(self)
 
 
-# 生产产品模型
-class ProductInfo(db.Model):
+
+# 生产产品生产模型
+class ProductControlInfo(db.Model):
     __mapper_args__ = {
         "order_by": desc('beginTime')
     }
@@ -193,6 +194,100 @@ class ProductInfo(db.Model):
         self.desc = desc
         self.beginTime = beginTime
         self.endTime = endTime
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def commit(self):
+        db.session.commit()
+
+    @staticmethod
+    def search(infoForm):
+        filter = []
+        if infoForm.productId:
+            filter.append(ProductControlInfo.productId == infoForm.productId)
+        if infoForm.techId:
+            filter.append(ProductControlInfo.techId == infoForm.techId)
+        if infoForm.status:
+            filter.append(ProductControlInfo.status == infoForm.status)
+        if infoForm.processEval:
+            filter.append(ProductControlInfo.processEval == infoForm.processEval)
+        if infoForm.resultEval:
+            filter.append(ProductControlInfo.resultEval == infoForm.resultEval)
+
+        return ProductControlInfo.query.filter(and_(*filter)).limit(100).all()  # 一次性最多产生100条
+
+# 生产产品样本
+class ProductInfo(db.Model):
+    ID = db.Column(db.String(255), primary_key=True, unique=False, nullable=False)
+    Product_name = db.Column(db.String(255), unique=False, nullable=False)
+    Product_code = db.Column(db.String(255), nullable=False)
+    Industry = db.Column(db.String(255), nullable=False, unique=False)
+    Drawing_url = db.Column(db.String(255), nullable=False, unique=False)
+    Weld_number = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_position = db.Column(db.String(255), nullable=True, unique=False)
+    Joint_type = db.Column(db.String(255), nullable=True, unique=False)
+    Cross_section_type_size = db.Column(db.String(255), nullable=True, unique=False)
+    Length_of_weld = db.Column(db.String(255), nullable=True, unique=False)
+    Welding_quality_grade = db.Column(db.String(255), nullable=True, unique=False)
+    Welding_quality_grade_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_performance_level = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_performance_level_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Stress_grade = db.Column(db.String(255), nullable=True, unique=False)
+    Safety_grade = db.Column(db.String(255), nullable=True, unique=False)
+    Imperfection_quality_level = db.Column(db.String(255), nullable=True, unique=False)
+    Imperfection_quality_level_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_inspection_level = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_inspection_level_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Volumetric_tests = db.Column(db.String(255), nullable=True, unique=False)
+    Surface_tests = db.Column(db.String(255), nullable=True, unique=False)
+    Visual_examination = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_length_tolerance = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_length_tolerance_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_shape_tolerance = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_shape_tolerance_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_tolerance = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_tolerance_remark = db.Column(db.String(255), nullable=True, unique=False)
+    Weld_method = db.Column(db.String(255), nullable=True, unique=False)
+
+    def __init__(self, ID, Product_name, Product_code, Industry, Drawing_url, Weld_number, Weld_position, Joint_type
+                 , Cross_section_type_size, Length_of_weld, Welding_quality_grade, Welding_quality_grade_remark,
+                 Weld_performance_level, Weld_performance_level_remark, Stress_grade, Safety_grade, Imperfection_quality_level,
+                 Imperfection_quality_level_remark, Weld_inspection_level, Weld_inspection_level_remark, Volumetric_tests, Surface_tests,
+                 Visual_examination, Weld_length_tolerance, Weld_length_tolerance_remark, Weld_shape_tolerance,
+                 Weld_shape_tolerance_remark, Weld_tolerance, Weld_tolerance_remark, Weld_method):
+
+        self.ID = ID
+        self.Product_name = Product_name
+        self.Product_code = Product_code
+        self.Industry = Industry
+        self.Drawing_url = Drawing_url
+        self.Weld_number = Weld_number
+        self.Weld_position = Weld_position
+        self.Joint_type = Joint_type
+        self.Cross_section_type_size = Cross_section_type_size
+        self.Length_of_weld = Length_of_weld
+        self.Welding_quality_grade = Welding_quality_grade
+        self.Welding_quality_grade_remark = Welding_quality_grade_remark
+        self.Weld_performance_level = Weld_performance_level
+        self.Weld_performance_level_remark = Weld_performance_level_remark
+        self.Stress_grade = Stress_grade
+        self.Safety_grade = Safety_grade
+        self.Imperfection_quality_level = Imperfection_quality_level
+        self.Imperfection_quality_level_remark = Imperfection_quality_level_remark
+        self.Weld_inspection_level = Weld_inspection_level
+        self.Weld_inspection_level_remark = Weld_inspection_level_remark
+        self.Volumetric_tests = Volumetric_tests
+        self.Surface_tests = Surface_tests
+        self.Visual_examination = Visual_examination
+        self.Weld_length_tolerance = Weld_length_tolerance
+        self.Weld_length_tolerance_remark = Weld_length_tolerance_remark
+        self.Weld_shape_tolerance = Weld_shape_tolerance
+        self.Weld_shape_tolerance_remark = Weld_shape_tolerance_remark
+        self.Weld_tolerance = Weld_tolerance
+        self.Weld_tolerance_remark = Weld_tolerance_remark
+        self.Weld_method = Weld_method
 
     def save(self):
         db.session.add(self)
@@ -397,7 +492,7 @@ class DeviceInfo(db.Model):  # 先放着
     robotId = db.Column(db.String(16), nullable=True)  # 盒子连接得ROBOT uniqueid
     status = db.Column(db.String(16), nullable=False)  # normal delete表示设备已删除
 
-    def __init__(self, uniqueid, ip, port, type, name,  robotId, status):
+    def __init__(self, uniqueid, ip, port, type, name, robotId, status):
         self.uniqueid = uniqueid
         self.ip = ip
         self.port = port
