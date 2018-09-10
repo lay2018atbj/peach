@@ -47,9 +47,12 @@ def devRunSocket(NewDevice):
                     if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
                         signalsPool.ROBOT_STOP.send(application.config['DEVICES'][id]['uniqueid'], time=time.time())
 
+
                     # print(data)
                     # 插入数据库
                     one = CollectedDatas(application.config["DEVICES"][id]['uniqueid'], 1, e, v, t)
+                    last_v = v
+                    last_e = e
                     if i >= 80:
                         one.save()
                         i = 0

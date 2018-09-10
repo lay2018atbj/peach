@@ -45,6 +45,7 @@ def ma_manufacture_begin():
         product.endTime = end_time
         product.commit()
 
+    signalsPool.PRODUCT_BEGIN.send(product_id, time=time.time())
     return redirect(url_for('ma_index_product'))
 
 
@@ -72,4 +73,5 @@ def ma_manufacture_end():
         product.endTime = end_time
         product.commit()
 
+    signalsPool.PRODUCT_FINISHED.send(product_id, time=time.time())
     return redirect(url_for('ma_index_product'))

@@ -6,7 +6,7 @@ application.debug = True
 application.secret_key = '0pMfZOHyqVwRSYrtmgI89Pc1hs4ezknA'
 
 PORT = 80
-HOST = '172.20.10.5'
+HOST = '127.0.0.1'
 
 sqlusername = 'root'
 sqlpassword = '123456'
@@ -26,6 +26,8 @@ INTERVAL = 0
 
 # 存在的设备 ID:info
 DEVICES = {}
+
+
 
 # 一些临时的工艺参数
 # 电压阈值 通过起来判断机器人是否记时

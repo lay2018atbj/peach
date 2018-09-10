@@ -169,7 +169,6 @@ class SearchTechniqueInfoForm:
         return techniqueInfo.search(self)
 
 
-
 # 生产产品生产模型
 class ProductControlInfo(db.Model):
     __mapper_args__ = {
@@ -218,6 +217,7 @@ class ProductControlInfo(db.Model):
 
         return ProductControlInfo.query.filter(and_(*filter)).limit(100).all()  # 一次性最多产生100条
 
+
 # 生产产品样本
 class ProductInfo(db.Model):
     ID = db.Column(db.String(255), primary_key=True, unique=False, nullable=False)
@@ -253,8 +253,10 @@ class ProductInfo(db.Model):
 
     def __init__(self, ID, Product_name, Product_code, Industry, Drawing_url, Weld_number, Weld_position, Joint_type
                  , Cross_section_type_size, Length_of_weld, Welding_quality_grade, Welding_quality_grade_remark,
-                 Weld_performance_level, Weld_performance_level_remark, Stress_grade, Safety_grade, Imperfection_quality_level,
-                 Imperfection_quality_level_remark, Weld_inspection_level, Weld_inspection_level_remark, Volumetric_tests, Surface_tests,
+                 Weld_performance_level, Weld_performance_level_remark, Stress_grade, Safety_grade,
+                 Imperfection_quality_level,
+                 Imperfection_quality_level_remark, Weld_inspection_level, Weld_inspection_level_remark,
+                 Volumetric_tests, Surface_tests,
                  Visual_examination, Weld_length_tolerance, Weld_length_tolerance_remark, Weld_shape_tolerance,
                  Weld_shape_tolerance_remark, Weld_tolerance, Weld_tolerance_remark, Weld_method):
 
@@ -314,16 +316,22 @@ class ProductInfo(db.Model):
 
 
 # 生产产品模型
-class techniqueInfo(db.Model):
+class TechniqueInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    techniqueId = db.Column(db.String(16), unique=True, nullable=False)
-    productId = db.Column(db.String(16), unique=False, nullable=False)
-    deviceId = db.Column(db.String(16), unique=False, nullable=False)
+    techniqueId = db.Column(db.String(16), unique=False, nullable=False)
+    productKind = db.Column(db.String(16), unique=False, nullable=False)
+    deviceId = db.Column(db.Integer, unique=False, nullable=False)
+    electricity = db.Column(db.Float, unique=False, nullable=True)
+    voltage = db.Column(db.Float, unique=False, nullable=True)
+    temperature = db.Column(db.Float, unique=False, nullable=True)
 
-    def __init__(self, techniqueId, productId, deviceId):
+    def __init__(self, techniqueId, productKind, deviceId, electricity, voltage, temperature):
         self.techniqueId = techniqueId
-        self.productId = productId
+        self.productKind = productKind
         self.deviceId = deviceId
+        self.electricity = electricity
+        self.voltage = voltage
+        self.temperature = temperature
 
     def save(self):
         db.session.add(self)
@@ -562,10 +570,12 @@ class FactoryInfo(db.Model):
 
 class RobotRunInfo(db.Model):
     uniqueid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    techniqueId = db.Column(db.String(64), nullable=False)
     time = db.Column(db.DateTime, unique=False, default=datetime.datetime.now())
     run_status = db.Column(db.String(64), nullable=False)
 
-    def __init__(self, time, run_status):
+    def __init__(self, time, techniqueId, run_status):
+        self.techniqueId = techniqueId
         self.time = time
         self.run_status = run_status
 
