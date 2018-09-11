@@ -320,15 +320,15 @@ class TechniqueInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     techniqueId = db.Column(db.String(16), unique=False, nullable=False)
     productKind = db.Column(db.String(16), unique=False, nullable=False)
-    deviceId = db.Column(db.Integer, unique=False, nullable=False)
+    robotId = db.Column(db.String(16), unique=False, nullable=False)
     electricity = db.Column(db.Float, unique=False, nullable=True)
     voltage = db.Column(db.Float, unique=False, nullable=True)
     temperature = db.Column(db.Float, unique=False, nullable=True)
 
-    def __init__(self, techniqueId, productKind, deviceId, electricity, voltage, temperature):
+    def __init__(self, techniqueId, productKind, robotId, electricity, voltage, temperature):
         self.techniqueId = techniqueId
         self.productKind = productKind
-        self.deviceId = deviceId
+        self.robotId = robotId
         self.electricity = electricity
         self.voltage = voltage
         self.temperature = temperature
@@ -497,17 +497,17 @@ class DeviceInfo(db.Model):  # 先放着
     route = db.Column(db.String(64), unique=True, nullable=False)
     type = db.Column(db.String(64), unique=False, nullable=False)
     name = db.Column(db.String(64), nullable=False)
-    robotId = db.Column(db.String(16), nullable=True)  # 盒子连接得ROBOT uniqueid
+    robotId = db.Column(db.String(16), nullable=True)  # 盒子连接得ROBOT desc
     status = db.Column(db.String(16), nullable=False)  # normal delete表示设备已删除
 
-    def __init__(self, uniqueid, ip, port, type, name, robotId, status):
+    def __init__(self, uniqueid, ip, port, type, name, robot_id, status):
         self.uniqueid = uniqueid
         self.ip = ip
         self.port = port
         self.route = str(ip) + ':' + str(port)
         self.type = type
         self.name = name
-        self.robotId = robotId  # normal delete表示设备已删除
+        self.robotId = robot_id
         self.status = status  # normal delete表示设备已删除
 
     def save(self):

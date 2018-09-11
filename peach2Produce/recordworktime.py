@@ -17,11 +17,11 @@ def checkCollectorStatus(id):
     lasttime = time.time()
     work_status = 'stop'
     application.config['DEVICES'][id]['produce_status'] = work_status
-    max_v = 0
+    max_v = 10000
     min_v = 0
-    max_i = 0
+    max_i = 10000
     min_i = 0
-    if id in application.config['DEVICES']:
+    if id in application.config['DEVICES'] and 'V_THRESHILD_MAX' in application.config['DEVICES'][id]:
         max_v = application.config['DEVICES'][id]['V_THRESHILD_MAX']
         min_v = application.config['DEVICES'][id]['V_THRESHILD_MAX']
         max_i = application.config['DEVICES'][id]['I_THRESHILD_MAX']
@@ -31,7 +31,7 @@ def checkCollectorStatus(id):
             # re = DevicesInfo.query.filter(and_(DevicesInfo.date == time.strftime('%Y-%m-%d'),DevicesInfo.devId == application.config['DEVICES'][id]['uniqueid'])).first()
             if application.config['DEVICES'][id]['status'] == 'normal':
                 re.collectorNormalTime += (time.time() - lasttime)
-                data = CollectedDatas.query.filter_by(devid=application.config['DEVICES'][id]['uniqueid']).first()
+                data = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid']).first()
                 # if (datetime.datetime.now()-data.time).seconds >2: #两秒的容差
                 if data:
                     if data.voltage == 0:

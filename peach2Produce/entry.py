@@ -47,7 +47,7 @@ for device in devs:
         info['type'] = device.type
         info['route'] = device.route
         info['name'] = device.name
-        info['robotID'] = device.robotId
+        info['robotId'] = device.robotId
         info['status'] = device.status
         info['produce_status'] = 'stop'
         ##info['V_THRESHILD_MIN'] = 11

@@ -20,7 +20,7 @@ def ma_workshop_overview():
 
 @application.route('/ma_workshop/dataview/<int:id>')
 def ma_workshop_dataview(id):
-    data = CollectedDatas.query.filter_by(devid=application.config['DEVICES'][id]['uniqueid']).limit(1000).all()
+    data = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid']).limit(1000).all()
     vdatas = []
     edatas = []
     tdatas = []
@@ -40,9 +40,9 @@ def ma_workshop_getCollectedDatas(id):
     # devid是一个16位的标识符 不是在config的id
     data = None
     if id in application.config['DEVICES'] and application.config['DEVICES'][id]['status'] == 'normal':
-        data = CollectedDatas.query.filter_by(devid=application.config['DEVICES'][id]['uniqueid']).first()
+        data = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid']).first()
     if not data:
-        data = CollectedDatas(datetime.datetime.now(), 1, 0, 0, 0)
+        data = CollectedDatas(datetime.datetime.now(), 1, 0, 0, 0, 'stop',application.config['DEVICES'][id]['robotId'])
     return json.dumps(data, default=CollectedDataSeria)
 
 
@@ -71,7 +71,7 @@ def ma_workshop_searchHistoryDatas():
         reTime['startTime'] = request.form['startTime']
         reTime['endTime'] = request.form['endTime']
         id = int(request.form['devId'])
-        query = CollectedDatas.query.filter_by(devid=application.config['DEVICES'][id]['uniqueid'])
+        query = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid'])
         startTime = datetime.datetime.strptime(reTime['startTime'], '%Y-%m-%d %H:%M:%S')
         if reTime['endTime']:
             data = query.filter(CollectedDatas.time.between(startTime, datetime.datetime.strptime(reTime['endTime'],

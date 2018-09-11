@@ -43,24 +43,30 @@ def devRunSocket(NewDevice):
                     t = (data[4] * 256 + data[5]) / 100
 
                     if (v != 0 or e != 0) and (last_v == 0 and last_e == 0):
-                        signalsPool.ROBOT_START.send(application.config['DEVICES'][id]['uniqueid'], time=time.time())
+                        signalsPool.ROBOT_START.send(id, time=time.time())
                     if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
-                        signalsPool.ROBOT_STOP.send(application.config['DEVICES'][id]['uniqueid'], time=time.time())
-
+                        signalsPool.ROBOT_STOP.send(id, time=time.time())
 
                     # print(data)
                     # 插入数据库
-                    one = CollectedDatas(application.config["DEVICES"][id]['uniqueid'], 1, e, v, t)
+                    unique_id = application.config["DEVICES"][id]['uniqueid']
+                    produce_status = application.config['DEVICES'][id]['produce_status']
+                    robotId = application.config['DEVICES'][id]['robotId']
+                    productId = -1
+                    if 'productId' in application.config['DEVICES'][id]:
+                        productId = application.config['DEVICES'][id]['productId']
+                    one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
+
                     last_v = v
                     last_e = e
-                    if i >= 80:
+                    if i >= 0:
                         one.save()
                         i = 0
                     i += 1
             else:
                 print("Device{}已删除".format(id))
         except Exception as err:
-            print(err)
+            print('err:'+ str(err))
             application.config['DEVICES'][id]['status'] = 'stop'
             print('Device{}连接异常 尝试重新连接{}次'.format(id, i))
             time.sleep(0.5)

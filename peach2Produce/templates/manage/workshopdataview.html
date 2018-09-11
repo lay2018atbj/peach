@@ -62,16 +62,26 @@ chart = Highcharts.stockChart('weldingchart', {
 								var seriesE = this.series[0];
 								var seriesV = this.series[1];
 								var seriesT = this.series[2];
+
+
 								setInterval(function () {
 								$.ajax({
                                     url: "{{url_for('ma_workshop_getCollectedDatas',id=id)}}",
                                     type:'GET',
                                     success: function(datas) {
-                                    datas=JSON.parse(datas);
+                                     datas=JSON.parse(datas);
+
                                      var x = (new Date(datas['time'])).getTime(); // current time
 									 seriesE.addPoint([x, datas['e']], true, true);
 									 seriesV.addPoint([x, datas['v']], true, true);
 									 seriesT.addPoint([x, datas['t']], true, true);
+
+                                     var produce_status = datas['produce_status'] ;
+									 var new_title = {
+                                            text: "{{config['DEVICES'][id]['name']}} 的采集数据<br/>机器人状态:" + produce_status,
+                                     };
+                                     chart.setTitle(new_title) ;
+
                                     },
                                      cache: false
                                 });

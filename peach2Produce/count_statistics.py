@@ -14,7 +14,7 @@ def countTheStatistics():
     lastData={}
     for id,info in application.config['DEVICES'].items():
         lastData[id]={}
-        lastData[id]['lastcd']= CollectedDatas.query.filter_by(devid=info['uniqueid']).first()
+        lastData[id]['lastcd']= CollectedDatas.query.filter_by(dev_uniqueId=info['uniqueid']).first()
         lastData[id]['timer'] = time.time()
 
     while True:
@@ -24,7 +24,7 @@ def countTheStatistics():
             todayCost.add()
         for id, info in application.config['DEVICES'].items():
             # 统计成本消耗    每个设备都要统计 由于所有设备的采集数据全部放在同一张表里所以要对devid限制
-            cd = CollectedDatas.query.filter_by(devid=info['uniqueid']).first()
+            cd = CollectedDatas.query.filter_by(dev_uniqueId=info['uniqueid']).first()
             if lastData[id]['lastcd'] and lastData[id]['lastcd'].electricity != 0 and lastData[id]['lastcd'].voltage != 0:
                 seconds = time.time() - lastData[id]['timer']
                 todayCost.power_consumption += ((((cd.electricity + lastData[id]['lastcd'].electricity) / 2) * (
@@ -32,7 +32,7 @@ def countTheStatistics():
                 todayCost.air_consumption += (application.config['AIRCONSUM'] * (seconds / 60))
                 todayCost.welding_wire_consumption += (application.config['WELDINGWIRECONSUM'] * (seconds / 60))*1000
                 todayCost.update()
-            lastData[id]['lastcd'] = CollectedDatas.query.filter_by(devid=info['uniqueid']).first()
+            lastData[id]['lastcd'] = CollectedDatas.query.filter_by(dev_uniqueId=info['uniqueid']).first()
             lastData[id]['timer'] = time.time()
 
         #先统计产品信息

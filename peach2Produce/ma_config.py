@@ -53,8 +53,10 @@ def ma_config_connectdevice():
             device = NewDevice.load(request)
             device.save()
             devsocket.startCollectedThread(device)
+        if application.config['DEVICES'][device_id]['status'] != 'stop':
+            print("not stop")
         else:
-            print("not found")
+            print("not found or not stop")
     except Exception as e:
         print(e)
     return redirect(url_for('ma_index_config'))

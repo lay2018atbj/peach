@@ -14,17 +14,21 @@ class CollectedDatas(db.Model):
     electricity = db.Column(db.Float, unique=False)
     voltage = db.Column(db.Float, unique=False)
     temperature = db.Column(db.Float, unique=False)
-    workpieceid = db.Column(db.Integer, unique=False)
-    devid = db.Column(db.String(16), unique=False)
+    productId = db.Column(db.Integer, unique=False)
+    dev_uniqueId = db.Column(db.String(16), unique=False)
     time = db.Column(db.DateTime, unique=False, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
+    produce_status = db.Column(db.String(16), unique=False)
+    robotId = db.Column(db.String(16), unique=False)
 
-    def __init__(self, devid, workpieceid, electricity, voltage, temperature):
+    def __init__(self, dev_uniqueId, productId, electricity, voltage, temperature, produce_status, robotId):
         self.electricity = electricity
         self.voltage = voltage
         self.temperature = temperature
-        self.workpieceid = workpieceid
-        self.devid = devid
+        self.productId = productId
+        self.dev_uniqueId = dev_uniqueId
         self.time = datetime.datetime.now()
+        self.produce_status = produce_status
+        self.robotId = robotId
 
     def save(self):
         db.session.add(self)
@@ -38,7 +42,9 @@ def CollectedDataSeria(obj):
         'e': obj.electricity,
         'v': obj.voltage,
         't': obj.temperature,
-        'workid': obj.workpieceid
+        'productId': obj.productId,
+        'produce_status': obj.produce_status,
+        'robotId': obj.robotId
     }
 
 

@@ -1,17 +1,17 @@
 import signalsPool
 from app import db, application
-from models import RobotRunInfo, ProductControlInfo, TechniqueInfo
+from models import RobotRunInfo, ProductControlInfo, TechniqueInfo, DeviceInfo
 import threading
 
 
 def signals_robot_start_callback(sender, *args, **kwargs):
-    print(threading.current_thread().name)
-    print(sender + 'begin')
+    application.config['DEVICES'][sender]['produce_status'] = 'working'
+    print(threading.current_thread().name + ':start')
 
 
 def signals_robot_stop_callback(sender, *args, **kwargs):
-    print(threading.current_thread().name)
-    print(sender + 'stop')
+    application.config['DEVICES'][sender]['produce_status'] = 'stop'
+    print(threading.current_thread().name + ':stop')
 
 
 def signals_product_begin_callback(product_id, *args, **kwargs):
@@ -19,12 +19,19 @@ def signals_product_begin_callback(product_id, *args, **kwargs):
     techId = product.techId
     techniqueInfos = TechniqueInfo.query.filter_by(techniqueId=techId).all()
     for technique in techniqueInfos:
-        tech_device = technique.deviceId
+        tech_robot_id = technique.robotId
+        print(tech_robot_id)
+        tech_device = DeviceInfo.query.filter_by(robotId=tech_robot_id).first()
+        tech_device_id = -1
+        if tech_device:
+            tech_device_id = tech_device.id
+        else:
+            print(tech_robot_id + ":not found")
         tech_electricity = technique.electricity
         tech_voltage = technique.voltage
         tech_temperature = technique.temperature
         for device_id in application.config['DEVICES']:
-            if device_id == int(tech_device):
+            if device_id == int(tech_device_id):
                 application.config['DEVICES'][device_id]['productId'] = product.productId
                 application.config['DEVICES'][device_id]['techniqueId'] = technique.techniqueId
                 application.config['DEVICES'][device_id]['electricity'] = tech_electricity
@@ -42,8 +49,10 @@ def signals_product_finish_callback(product_id, *args, **kwargs):
         application.config['DEVICES'][device_id]['produce_status'] = 'stop'
 
 
+# 机器人
 signalsPool.ROBOT_START.connect(signals_robot_start_callback)
 signalsPool.ROBOT_STOP.connect(signals_robot_stop_callback)
 
+# 产品生产
 signalsPool.PRODUCT_BEGIN.connect(signals_product_begin_callback)
 signalsPool.PRODUCT_FINISHED.connect(signals_product_finish_callback)

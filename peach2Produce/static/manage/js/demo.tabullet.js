@@ -37,10 +37,12 @@ function doConnect(){
             var deviceId   = deviceTr.find("td:eq(1)").text()  ;
             var deviceIp   = deviceTr.find("td:eq(2)").text()  ;
             var devicePort = deviceTr.find("td:eq(3)").text()  ;
+            var desc       = deviceTr.find("td:eq(4)").text()  ;
+            var robotId    = deviceTr.find("td:eq(5)").text()  ;
 
             //alert()
             $.post("/ma_config/connectdevice",
-                   {"id":deviceId,"ip":deviceIp,"port":devicePort},
+                   {"id":deviceId,"devIP":deviceIp,"devPort":devicePort,"robotId":robotId,"devDesc":desc},
                     function(){alert("设备id:" + deviceId + ",host:" + deviceIp  + ",port:" + devicePort+"重连成功") ;}
                     ,"json"
              );
