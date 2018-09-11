@@ -12,32 +12,20 @@
                             	<div class="mws-form-row">
                                 	<label>产品编号</label>
                                 	<div class="mws-form-item ">
-                                    	<input type="text" name="productId" class="mws-textinput" value="{{formModel.workpieceId}}" />
+                                    	<input type="text" name="productKind" class="mws-textinput" value="{{formModel.productKind}}" />
                                     </div>
                                 </div>
                                 <div class="mws-form-row">
                                 	<label>工艺ID</label>
                                 	<div class="mws-form-item ">
-                                    	<input type="text" name="techId" class="mws-textinput" value="{{formModel.techId}}"/>
+                                    	<input type="text" name="techniqueId" class="mws-textinput" value="{{formModel.techniqueId}}"/>
                                     </div>
                                 </div>
                             	<div class="mws-form-row">
-                    				<label>设备ID</label>
-                    				<div class="mws-form-item large">
-                    					<select name="devId">
-                    						<option
-                                                    {%if not formModel.devId %}
-                                                    selected="selected"
-                                                    {%endif%} value=""
-                                            >All</option>
-                    						{% for id,info in config['DEVICES'].items()%}
-                                            <option value="{{id}}"
-                                                    {%if id == formModel.devId %}
-                                                    selected="selected"
-                                                    {%endif%}>Device {{id}}</option>
-                                            {%endfor%}
-                    					</select>
-                    				</div>
+                    				<label>机器人ID</label>
+                                    <div class="mws-form-item ">
+                                    	<input type="text" name="robotId" class="mws-textinput" value="{{formModel.robotId}}"/>
+                                    </div>
                     			</div>
 
                             </div>
@@ -49,21 +37,23 @@
                         <table class="mws-datatable-fn mws-table">
                             <thead>
                                 <tr>
-                                    <th>工件ID</th>
-                                    <th>工艺ID</th>
-                                    <th>设备ID</th>
+                                    <th>产品类型</th>
+                                    <th>工艺种类</th>
+                                    <th>生产机器</th>
+                                    <th>电流</th>
+                                    <th>电压</th>
+                                    <th>温度</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {%for info in formModel.getSearchResults()%}
                                 <tr class="gradeA">
-                                    <td>{{info.workpieceId}}</td>
-                                    <td>{{info.devId}}</td>
-                                    <td>{{info.techId}}</td>
-                                    <td>{{info.status}}</td>
-                                    <td>{{info.processEval}}</td>
-                                    <td>{{info.resultEval}}</td>
-                                    <td>{{info.desc}}</td>
+                                    <td>{{info.productKind}}</td>
+                                    <td>{{info.techniqueId}}</td>
+                                    <td>{{info.robotId}}</td>
+                                    <td>{{info.electricity}}</td>
+                                    <td>{{info.voltage}}</td>
+                                    <td>{{info.temperature}}</td>
                                 </tr>
                             {%endfor %}
                             </tbody>

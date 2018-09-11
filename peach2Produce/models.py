@@ -147,17 +147,17 @@ class SearchInfoForm:
 
 # 用于生产信息查询form的模型
 class SearchTechniqueInfoForm:
-    def __init__(self, productId, devId, techId):
-        self.productId = productId
-        self.devId = devId  # config里的临时id
-        self.techId = techId
+    def __init__(self, productKind, robotId, techniqueId):
+        self.productKind = productKind
+        self.robotId = robotId  # config里的临时id
+        self.techniqueId = techniqueId
 
     @staticmethod
     def load(request):
-        if 'productId' in request.form:
-            return SearchTechniqueInfoForm(request.form['productId'],
-                                           int(request.form['devId']) if request.form['devId'] else '',
-                                           request.form['techId'],
+        if 'productKind' in request.form:
+            return SearchTechniqueInfoForm(request.form['productKind'] if request.form['productKind'] else '',
+                                           request.form['robotId'] if request.form['robotId'] else '',
+                                           request.form['techniqueId'] if request.form['techniqueId'] else '',
                                            )
         else:
             return SearchTechniqueInfoForm('',
@@ -166,7 +166,7 @@ class SearchTechniqueInfoForm:
                                            )
 
     def getSearchResults(self):
-        return techniqueInfo.search(self)
+        return TechniqueInfo.search(self)
 
 
 # 生产产品生产模型
@@ -343,14 +343,14 @@ class TechniqueInfo(db.Model):
     @staticmethod
     def search(infoForm):
         filter = []
-        if infoForm.productId:
-            filter.append(techniqueInfo.productId == infoForm.productId)
-        if infoForm.techId:
-            filter.append(techniqueInfo.techniqueId == infoForm.techniqueId)
-        if infoForm.devId:
-            filter.append(techniqueInfo.deviceId == infoForm.deviceId)
+        if infoForm.productKind:
+            filter.append(TechniqueInfo.productKind == infoForm.productKind)
+        if infoForm.techniqueId:
+            filter.append(TechniqueInfo.techniqueId == infoForm.techniqueId)
+        if infoForm.robotId:
+            filter.append(TechniqueInfo.robotId == infoForm.robotId)
 
-        return techniqueInfo.query.filter(and_(*filter)).limit(100).all()  # 一次性最多产生100条
+        return TechniqueInfo.query.filter(and_(*filter)).limit(100).all()  # 一次性最多产生100条
 
 
 # 用于统计历史数据的表 ，每条记录是每一天的，通过对一列求和得到总和
