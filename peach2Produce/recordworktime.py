@@ -33,7 +33,7 @@ def checkCollectorStatus(id):
                 re.collectorNormalTime += (time.time() - lasttime)
                 data = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid']).first()
                 # if (datetime.datetime.now()-data.time).seconds >2: #两秒的容差
-                if data:
+                if application.config['DEVICES'][id]['produce_status'] == 'working' and data:
                     if data.voltage == 0:
                         re.robotRestTime += (time.time() - lasttime)
                     elif data.voltage >= min_v and data.voltage <= max_v and data.electricity >= min_i and data.electricity <= max_i:
@@ -44,10 +44,13 @@ def checkCollectorStatus(id):
                         re.robotExceptionTime += (time.time() - lasttime)
                         work_status = 'abnormal'
                         application.config['DEVICES'][id]['produce_status'] = work_status
-            elif application.config['DEVICES'][id]['status'] == 'stop' or application.config['DEVICES'][id][
-                'status'] == 'reconnecting' or application.config['DEVICES'][id]['status'] == 'connecting':
+                else:
+                    re.robotRestTime += (time.time() - lasttime)
+            elif application.config['DEVICES'][id]['status'] == 'stop' \
+                    or application.config['DEVICES'][id]['status'] == 'reconnecting' \
+                    or application.config['DEVICES'][id]['status'] == 'connecting':
                 re.collectorStopTime += (time.time() - lasttime)
-                re.robotRestTime += (time.time() - lasttime)
+
             # db.session.update(re)
             db.session.commit()
             lasttime = time.time()

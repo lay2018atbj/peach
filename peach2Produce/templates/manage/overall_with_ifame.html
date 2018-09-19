@@ -29,17 +29,27 @@
                 <br/>
                 <li><a class="li-choose-click"
                        onclick="window.location.href='{{ url_for('ma_workshop_overview',factoryId=1)}}'">
-                    陕西省宝鸡市高新区中高创新研究院</a>
-                </li>
-
+                    陕西省宝鸡市高新区中高创新研究院</a></li>
+                <!--
+                <li><a class="li-choose-click"
+                    onclick="
+                        $.ajax({
+                            url:'{{ url_for('ma_workshop_overview') }}',
+                            data:{'workplace_id': '2'},
+                            success:function(result){
+                                var Obj = $('<code></code>').append($(result));//包装数据
+                                var data = $('#plain', Obj);
+                                $('#plain').append(result);
+                         }
+                    });
+                    " >陕西省宝鸡市陈仓区机器人研究院</a>
+                 </li>
+                 -->
                 <li><a class="li-choose-click"
                        onclick="window.location.href='{{ url_for('ma_workshop_overview',factoryId=2)}}'">
                         陕西省宝鸡市陈仓区丝路机器人研究院</a>
                 </li>
-                <li><a class="li-choose-click"
-                       onclick="window.location.href='{{ url_for('ma_workshop_overview',factoryId=2)}}'">
-                        江苏省泰州市靖江市机器人焊接中心</a>
-                </li>
+                <li>江苏省泰州市靖江市机器人焊接研究院</li>
             </ul>
 
         </div>
@@ -60,7 +70,7 @@
              </div>
                      <select id="box1View" multiple="multiple" style="height:85%;width:99%; overflow:auto;" onchange="changeFactory()">
                          <option value="1" title="中高创新机器人研究院" >中高创新机器人研究院</option>
-                         <option value="2" title="丝路机器人研究院">陈仓区机器人研究院</option>
+                         <option value="2" title="陈仓区机器人研究院">陈仓区机器人研究院</option>
                          <option value="3" title="靖江焊接中心">靖江焊接中心</option>
                      </select>
          </div>
@@ -69,7 +79,8 @@
                     <span>车间视图</span>
                 </div>
                 <div class="mws-panel-body" id="workplace" style="height:85%;width:99%; overflow:hidden;">
-                    <canvas  id="plain"  style="height:95%; width:100%; display:block;"  ></canvas >
+                    <!--canvas  id="plain"  style="height:95%; width:100%; display:block;"  ></--canvas -->
+                    <iframe  style="margin-top:-150px;width:160%;margin-left:-245px;margin-right:-150px;display:block;" frameborder="0" marginheight="0" marginwidth="0" border="0" id="alimamaifrm" name="alimamaifrm" scrolling="no" height="99%" width="99%" src="{{url_for('ma_workshop_overview',factoryId=1)}}"></iframe>
 
                 </div>
 
@@ -134,89 +145,27 @@
 
 <script>
 
+function one(){
+    alimamaifrm.window.location.reload()
+}
+setInterval(one,3000)
 
-var intvId  =  setInterval(cycle,1000,1)
 
 function changeFactory(){
-    var optId = $("#box1View").val();
+    var opt=$("#box1View").val();
     var name=$("#box1View").find("option:selected").attr("title") ;
-    clearInterval(intvId);
-    intvId =  setInterval(cycle,1000,optId) ;
-};
-
-
-
-var canvas = document.getElementById("plain")
-var cxt = canvas.getContext("2d");
-var height=canvas.clientHeight
-var width=canvas.clientWidth
-
-
-
-function loadImages(sources, callback){
-
-    var count = 0,
-        images ={},
-        imgNum = 0;
-    for(src in sources){
-        imgNum++;
-    }
-
-    for(src in sources){
-        images[src] = new Image();
-        images[src].onload = function(){
-            if(++count >= imgNum){
-                callback(images);
-            }
-        }
-        images[src].src = sources[src];
-    }
-}
-
-
-var thisFactory  = 1 ;
-//存储图片链接信息的关联数组
-function cycle(id){
-    var sources = {} ;
-    var posX    = {} ;
-    var posY    = {} ;
-    var robotWidth  = {} ;
-    var robotHeight = {} ;
-    var factoryId   = {} ;
-    thisFactory = id
-    var postData = JSON.stringify({"factoryId":id}) ;
-     $.ajax({
-              url:'{{ url_for('ma_workshop_getRobotModels') }}',
-              type:'POST',
-              data:postData ,
-              async:false,
-              contentType: 'application/json',
-              success:function(result){
-                robotModels=JSON.parse(result);
-                if(robotModels){
-                    for ( key in robotModels){
-                       sources[key]        =  robotModels[key].imageURL ;
-                       posX[key]           =  robotModels[key].posX      ;
-                       posY[key]           =  robotModels[key].posY      ;
-                       robotWidth[key]     =  robotModels[key].width     ;
-                       robotHeight[key]    =  robotModels[key].height    ;
-                       factoryId[key]      =  robotModels[key].factoryId ;
-                    }
-                    //调用图片预加载函数，实现回调函数
-                    loadImages(sources, function(images){
-                        canvas.width = window.innerWidth;
-                        canvas.height = window.innerHeight;
-                        //TO-DO something
-                        for(src in sources){
-                            if (factoryId[src] == id){
-                                cxt.drawImage(images[src],posX[src]*canvas.width,posY[src]*canvas.height,robotWidth[src]*canvas.width,robotHeight[src]*canvas.height);
-                            }
-                        }
-                     });
-                 }
+    $.ajax({
+             url:'{{ url_for('ma_workshop_overview') }}',
+             data:{'workplace_id': opt},
+             async: true,
+             success:function(result){
+                    alert(name)
+                    var Obj = $('<code></code>').append($(result));//包装数据
+                    var data = $('#plain', Obj);
+                    $('#plain').html(result);
               }
     });
- }
+};
 
 
 
@@ -586,6 +535,90 @@ var chart = Highcharts.chart('historyCost',{
         data: {{historyCost['weldingwire']}}
     }]
 });
+
+
+
+var canvas = document.getElementById("plain")
+var cxt = canvas.getContext("2d");
+var height=canvas.clientHeight
+var width=canvas.clientWidth
+
+
+
+function loadImages(sources, callback){
+    var count = 0,
+        images ={},
+        imgNum = 0;
+    for(src in sources){
+        imgNum++;
+    }
+
+    for(src in sources){
+        images[src] = new Image();
+
+        images[src].onload = function(){
+            if(++count >= imgNum){
+                callback(images);
+            }
+        }
+        images[src].src = sources[src];
+    }
+}
+
+
+
+//存储图片链接信息的关联数组
+function cycle(){
+    var sources = {} ;
+    var posX    = {} ;
+    var posY    = {} ;
+    var robotWidth  = {} ;
+    var robotHeight = {} ;
+
+    {%for info in robotModels%}
+        sources['{{info.uniqueid}}'] = '{{info.imageURL}}' ;
+        posX['{{info.uniqueid}}']    = {{info.posX}} ;
+        posY['{{info.uniqueid}}']    = {{info.posY}} ;
+        robotWidth['{{info.uniqueid}}']    = {{info.width}}  ;
+        robotHeight['{{info.uniqueid}}']    = {{info.height}}  ;
+    {%endfor%}
+    //调用图片预加载函数，实现回调函数
+    loadImages(sources, function(images){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    //TO-DO something
+
+        for(src in sources){
+          cxt.drawImage(images[src],posX[src]*canvas.width,posY[src]*canvas.height,robotWidth[src]*canvas.width,robotHeight[src]*canvas.height);
+         }
+    });
+ }
+
+
+
+function paintAgv(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    $.ajax({
+           url: "{{url_for('ma_workshop_getAgvPose')}}",
+           type:'GET',
+           success: function(data) {
+                data=JSON.parse(data);
+                if(data){
+                    var carimg=new Image();
+                    carimg.src='/static/manage/images/car.jpg';
+                    cxt.drawImage(carimg,data[0]*canvas.width,data[1]*canvas.height);
+                    cxt.font = "36px 隶书";
+	                cxt.fillStyle = "Green";
+			    }
+           },
+           cache: false
+    });
+}
+
+cycle()
+
+
 
 
 

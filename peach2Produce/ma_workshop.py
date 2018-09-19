@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 from app import application
-from flask import url_for, render_template, request, redirect
+from flask import url_for, render_template, request, redirect, jsonify
 import json
 from datamodels import CollectedDatas, CollectedDataSeria
 from models import RobotInfo, AgvPos
@@ -8,13 +8,11 @@ import datetime
 import time
 
 
-@application.route('/ma_workshorp/overview')
-def ma_workshop_overview():
-    if ("workplace_id" in request.args):
-        workplace_id = request.args["workplace_id"]
-    else:
-        workplace_id = 1
-    robotModels = RobotInfo.query.filter_by(factoryId=workplace_id).all()
+@application.route('/ma_workshorp/overview/<int:factoryId>')
+def ma_workshop_overview(factoryId):
+    if not factoryId:
+        factoryId = 1
+    robotModels = RobotInfo.query.filter_by(factoryId=factoryId).all()
     return render_template('manage/workshopoverview.html', titlename='车间视图', robotModels=robotModels)
 
 
@@ -42,8 +40,32 @@ def ma_workshop_getCollectedDatas(id):
     if id in application.config['DEVICES'] and application.config['DEVICES'][id]['status'] == 'normal':
         data = CollectedDatas.query.filter_by(dev_uniqueId=application.config['DEVICES'][id]['uniqueid']).first()
     if not data:
-        data = CollectedDatas(datetime.datetime.now(), 1, 0, 0, 0, 'stop',application.config['DEVICES'][id]['robotId'])
+        data = CollectedDatas(datetime.datetime.now(), 1, 0, 0, 0, 'stop', application.config['DEVICES'][id]['robotId'])
     return json.dumps(data, default=CollectedDataSeria)
+
+
+
+@application.route('/ma_workshop/getRobotModels', methods=['GET', 'POST'])
+def ma_workshop_getRobotModels():
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        factoryId = data["factoryId"]
+    if not factoryId:
+        factoryId = 1
+    print(factoryId)
+    robotModels = RobotInfo.query.filter_by(factoryId=factoryId).all()
+    result = dict()
+    for info in robotModels:
+        tmp = dict()
+        tmp["uniqueid"] = info.uniqueid
+        tmp["posX"] = info.posX
+        tmp["posY"] = info.posY
+        tmp["width"] = info.width
+        tmp["height"] = info.height
+        tmp["factoryId"] = info.factoryId
+        tmp["imageURL"] = info.imageURL
+        result[info.uniqueid] = tmp
+    return json.dumps(result)
 
 
 @application.route('/ma_workshop/getAgvPos', methods=['GET'])
@@ -53,12 +75,6 @@ def ma_workshop_getAgvPose():
     if re:
         result.append(re.pos_X)
         result.append(re.pos_Y)
-        # cd = CollectedDatas.query.first()
-        ##if cd and cd.electricity != 0 and cd.voltage != 0:
-        ##    r = RobotInfo.query.filter_by(RobotInfo.uniqueid == cd.devid).first()
-        ##    result.append(r.pos_X)
-        ##    result.append(r.pos_Y)
-        ##else:
         result.append(0)
         result.append(0)
     return json.dumps(result)

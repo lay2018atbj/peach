@@ -530,8 +530,10 @@ class RobotInfo(db.Model):
     posX = db.Column(db.Float, nullable=False)
     posY = db.Column(db.Float, nullable=False)
     posZ = db.Column(db.Float, nullable=False)
+    width = db.Column(db.Float, nullable=False)
+    height = db.Column(db.Float, nullable=False)
 
-    def __init__(self, type, model, status, factoryId, imageURL, posX, posY, posZ):
+    def __init__(self, type, model, status, factoryId, imageURL, posX, posY, posZ,width,height):
         self.uniqueid = randomStr(16)
         self.type = type
         self.model = model
@@ -541,11 +543,15 @@ class RobotInfo(db.Model):
         self.posX = posX
         self.posY = posY
         self.posZ = posZ
+        self.width = width
+        self.height = height
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
+    def commit(self):
+        db.session.commit()
 
 # 机器人信息的表
 class FactoryInfo(db.Model):

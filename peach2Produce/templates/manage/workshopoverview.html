@@ -42,31 +42,24 @@
 <script>
 
 
-    var canvas = document.getElementById("plain")
+    var canvas = document.getElementById("plain") ;
     var cxt = canvas.getContext("2d");
-    var height=canvas.clientHeight
-    var width=canvas.clientWidth
-   /*
-    function cycle(){
-    {%for info in robotModels%}
-    var img=new Image();
-    img.src='{{info.url}}';
-    cxt.drawImage(img,{{info.pos_X}}*width,{{info.pos_Y}}*height);
-
-    {%endfor%}
-    }
-   */
-
+    var height=canvas.clientHeight;
+    var width=canvas.clientWidth;
 
 //存储图片链接信息的关联数组
 function cycle(){
-    var sources = {}
-    var posX    = {}
-    var posY    = {}
+    var sources = {} ;
+    var posX    = {} ;
+    var posY    = {} ;
+    var robotHeight = {} ;
+    var robotWidth = {} ;
     {%for info in robotModels%}
-        sources['{{info.uniqueid}}'] = '{{info.imageURL}}'
-        posX['{{info.uniqueid}}']    = {{info.posX}}
-        posY['{{info.uniqueid}}']    = {{info.posY}}
+        sources['{{info.uniqueid}}'] = '{{info.imageURL}}' ;
+        posX['{{info.uniqueid}}']    = {{info.posX}}  ;
+        posY['{{info.uniqueid}}']    = {{info.posY}}  ;
+        robotWidth['{{info.uniqueid}}']    = {{info.width}}  ;
+        robotHeight['{{info.uniqueid}}']    = {{info.height}}  ;
     {%endfor%}
     //调用图片预加载函数，实现回调函数
     loadImages(sources, function(images){
@@ -74,7 +67,7 @@ function cycle(){
         canvas.height = window.innerHeight;
     //TO-DO something
         for(src in sources){
-            cxt.drawImage(images[src],posX[src]*canvas.width,posY[src]*canvas.height);
+            cxt.drawImage(images[src],posX[src]*canvas.width,posY[src]*canvas.height,robotWidth[src]*canvas.width,robotHeight[src]*canvas.height);
          }
     });
  }
@@ -120,8 +113,6 @@ function paintAgv(){
 }
 
 setInterval(cycle,1000)
-setInterval(paintAgv,1000)
-
 
 
 

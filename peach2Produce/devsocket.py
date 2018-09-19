@@ -37,36 +37,41 @@ def devRunSocket(NewDevice):
                 while id in application.config['DEVICES']:
                     if application.config['DEVICES'][id]['status'] != 'normal':  # 在运行时另一个同线程开始了 此处线程退出
                         return
-                    data = sc.recv(8)
-                    e = (data[2] * 256 + data[3]) / 100  # 文档中电压与电流 与实际相反
-                    v = (data[0] * 256 + data[1]) / 100
-                    t = (data[4] * 256 + data[5]) / 100
 
-                    if (v != 0 or e != 0) and (last_v == 0 and last_e == 0):
-                        signalsPool.ROBOT_START.send(id, time=time.time())
-                    if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
-                        signalsPool.ROBOT_STOP.send(id, time=time.time())
+                    try:
+                        data = sc.recv(8)
+                        e = (data[2] * 256 + data[3]) / 100  # 文档中电压与电流 与实际相反
+                        v = (data[0] * 256 + data[1]) / 100
+                        t = (data[4] * 256 + data[5]) / 100
+
+                        if (v != 0 or e != 0) and (last_v == 0 and last_e == 0):
+                            signalsPool.ROBOT_START.send(id, time=time.time())
+                        if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
+                            signalsPool.ROBOT_STOP.send(id, time=time.time())
 
                     # print(data)
                     # 插入数据库
-                    unique_id = application.config["DEVICES"][id]['uniqueid']
-                    produce_status = application.config['DEVICES'][id]['produce_status']
-                    robotId = application.config['DEVICES'][id]['robotId']
-                    productId = -1
-                    if 'productId' in application.config['DEVICES'][id]:
-                        productId = application.config['DEVICES'][id]['productId']
-                    one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
+                        unique_id = application.config["DEVICES"][id]['uniqueid']
+                        produce_status = application.config['DEVICES'][id]['produce_status']
+                        robotId = application.config['DEVICES'][id]['robotId']
+                        productId = -1
+                        if 'productId' in application.config['DEVICES'][id]:
+                            productId = application.config['DEVICES'][id]['productId']
+                        one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
 
-                    last_v = v
-                    last_e = e
-                    if i >= 0:
-                        one.save()
-                        i = 0
-                    i += 1
+                        last_v = v
+                        last_e = e
+                        if i >= 0:
+                            one.save()
+                            i = 0
+                        i += 1
+                    except Exception as err:
+                        sc.connect((host, port))
+                        time.sleep(60)
             else:
                 print("Device{}已删除".format(id))
         except Exception as err:
-            print('err:'+ str(err))
+            print('err:' + str(err))
             application.config['DEVICES'][id]['status'] = 'stop'
             print('Device{}连接异常 尝试重新连接{}次'.format(id, i))
             time.sleep(0.5)

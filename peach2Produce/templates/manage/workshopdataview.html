@@ -63,7 +63,6 @@ chart = Highcharts.stockChart('weldingchart', {
 								var seriesV = this.series[1];
 								var seriesT = this.series[2];
 
-
 								setInterval(function () {
 								$.ajax({
                                     url: "{{url_for('ma_workshop_getCollectedDatas',id=id)}}",
