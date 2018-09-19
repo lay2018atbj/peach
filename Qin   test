@@ -1,3 +1,7 @@
-qweqwe
-qweqweqwe
-qweqwe
+git fetch：相当于是从远程获取最新版本到本地，不会自动合并。
+git pull [options] [<repository> [<refspec>…]]
+将远程存储库中的更改合并到当前分支中。在默认模式下，git pull是git fetch后跟git merge FETCH_HEAD的缩写。
+更准确地说，git pull使用给定的参数运行git fetch，并调用git merge将检索到的分支头合并到当前分支中。 使用--rebase，它运行git rebase而不是git merge。
+//
+//
+我直接关注你的好友   然后进入你的项目     加入你的fork    就可以直接看到你的代码以及修改了？     
