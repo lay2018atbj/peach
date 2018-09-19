@@ -53,7 +53,7 @@ def ma_config_connectdevice():
             device = NewDevice.load(request)
             device.save()
             devsocket.startCollectedThread(device)
-        if application.config['DEVICES'][device_id]['status'] != 'stop':
+        elif application.config['DEVICES'][device_id]['status'] != 'stop':
             print("not stop")
         else:
             print("not found or not stop")

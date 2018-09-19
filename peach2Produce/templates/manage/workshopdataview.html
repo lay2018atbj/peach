@@ -21,10 +21,10 @@
                         <input type="text" name="devId" class="mws-textinput required" value="{{id}}"/>
 
                         <label>起始时间点</label>
-                        <input type="datetime-local" name="startTime" class="mws-textinput mws-datepicker hasDatepicker"/>
+                        <input type="text" name="startTime" class="mws-textinput mws-datepicker hasDatepicker"/>
 
                         <label>结束时间点</label>
-                        <input type="datetime-local" name="endTime" class="mws-textinput mws-datepicker hasDatepicker "/>
+                        <input type="text" name="endTime" class="mws-textinput mws-datepicker hasDatepicker"/>
 
                         <input type="submit" class="mws-button green" value="查询"/>
                  </form>
@@ -84,7 +84,7 @@ chart = Highcharts.stockChart('weldingchart', {
                                     },
                                      cache: false
                                 });
-								}, 1000);
+								}, 100000);
 						}
 				}
 		},
@@ -125,32 +125,7 @@ chart = Highcharts.stockChart('weldingchart', {
 			borderWidth: 0
 		},
 
-		yAxis: [{
-			title: {
-				text: '电压'
-			},
-		    plotLines:[{
-                color:'white',           //线的颜色，定义为红色
-                dashStyle:'longdashdot',     //默认值，这里定义为实线
-                value: {{config['DEVICES'][id]['V_THRESHILD_MAX']}},               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
-                width:2,
-                label:{text:'电压上限', style:{color:'white'}}
-            },{
-                color:'white',           //线的颜色，定义为红色
-                dashStyle:'longdashdot',     //默认值，这里定义为实线
-                value: {{config['DEVICES'][id]['V_THRESHILD_MIN']}},               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
-                width:2,
-                label:{text:'电压下限', style:{color:'white'} }
-            }],
-            min: 0 ,
-            max: 60 ,
-            labels: {
-			    format: '{value} V',
-			    style: {
-				    color: '#7cb5ec'
-			    }
-		    }
-		}, {    // 第二个坐标轴，电流
+		yAxis: [ {    // 第一个坐标轴，电流
 			title: {
 				text: '电流'
 			},
@@ -171,7 +146,6 @@ chart = Highcharts.stockChart('weldingchart', {
                 label:{text:'电流下限',style:{color:'red'} }
             }],
             min: 0,
-            max: 200,
             labels: {
 			    format: '{value} A',
 			    style: {
@@ -179,6 +153,30 @@ chart = Highcharts.stockChart('weldingchart', {
 			    }
 		    }
 		    ,opposite: true
+		},{
+			title: {
+				text: '电压'
+			},
+		    plotLines:[{
+                color:'white',           //线的颜色，定义为红色
+                dashStyle:'longdashdot',     //默认值，这里定义为实线
+                value: {{config['DEVICES'][id]['V_THRESHILD_MAX']}},               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
+                width:2,
+                label:{text:'电压上限', style:{color:'white'}}
+            },{
+                color:'white',           //线的颜色，定义为红色
+                dashStyle:'longdashdot',     //默认值，这里定义为实线
+                value: {{config['DEVICES'][id]['V_THRESHILD_MIN']}},               //定义在那个值上显示标示线，这里是在x轴上刻度为3的值处垂直化一条线
+                width:2,
+                label:{text:'电压下限', style:{color:'white'} }
+            }],
+            min: 0 ,
+            labels: {
+			    format: '{value} V',
+			    style: {
+				    color: '#7cb5ec'
+			    }
+		    }
 		},{
 			title: {
 				text: '温度'

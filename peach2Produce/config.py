@@ -6,7 +6,7 @@ application.debug = True
 application.secret_key = '0pMfZOHyqVwRSYrtmgI89Pc1hs4ezknA'
 
 PORT = 80
-HOST = '192.168.1.65'
+HOST = 'localhost'
 
 sqlusername = 'root'
 sqlpassword = '123456'

@@ -50,10 +50,10 @@ for device in devs:
         info['robotId'] = device.robotId
         info['status'] = device.status
         info['produce_status'] = 'stop'
-        ##info['V_THRESHILD_MIN'] = 11
-        ##info['V_THRESHILD_MAX'] = 15
-        ##info['I_THRESHILD_MIN'] = 110
-        ##info['I_THRESHILD_MAX'] = 150
+        info['V_THRESHILD_MIN'] = 11
+        info['V_THRESHILD_MAX'] = 15
+        info['I_THRESHILD_MIN'] = 110
+        info['I_THRESHILD_MAX'] = 150
         application.config['DEVICES'][device_id] = info
         devsocket.startCollectedThread(device)
 

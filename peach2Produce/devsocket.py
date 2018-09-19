@@ -15,66 +15,75 @@ import signalsPool
 def devRunSocket(NewDevice):
     id = NewDevice.id
     host = NewDevice.ip
-    port = NewDevice.port
+    port = int(NewDevice.port)
     application.config['DEVICES'][id]['statusTimePoint'] = time.time()
-    for i in range(1, 4):
-        try:
-            sc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            port = int(port)
-            if id in application.config['DEVICES']:
-                if i != 1:
+    sc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    application.config['DEVICES'][id]['scoket'] = sc
+    try:
+        application.config['DEVICES'][id]['status'] = 'connecting'
+        sc.connect((host, port))
+        application.config['DEVICES'][id]['status'] = 'normal'
+    except:
+        pass
+
+    if application.config['DEVICES'][id]['status'] != 'normal':
+        for try_times in range(1, 3):
+            try:
+                if id in application.config['DEVICES']:
                     application.config['DEVICES'][id]['status'] = 'reconnecting'
+                    sc.connect((host, port))
+                    application.config['DEVICES'][id]['status'] = 'normal'
                 else:
-                    application.config['DEVICES'][id]['status'] = 'connecting'
+                    print("Device{}已删除".format(id))
+            except Exception as err:
+                print('err:' + str(err))
+                application.config['DEVICES'][id]['status'] = 'stop'
+                print('Device{}连接异常 尝试重新连接{}次'.format(id, try_times))
+                time.sleep(1)
 
-                sc.connect((host, port))
-                application.config['DEVICES'][id]['status'] = 'normal'
-                application.config['DEVICES'][id]['scoket'] = sc
+    last_v = 0
+    last_e = 0
+    collected_num_thershold = 0
+    while id in application.config['DEVICES']:
+        if application.config['DEVICES'][id]['status'] != 'normal':  # 在运行时另一个同线程开始了 此处线程退出
+            return
+        try:
+            data = sc.recv(8)
+            e = (data[2] * 256 + data[3]) / 100  # 文档中电压与电流 与实际相反
+            v = (data[0] * 256 + data[1]) / 100
+            t = (data[4] * 256 + data[5]) / 100
 
-                i = 0
-                last_v = 0
-                last_e = 0
-                while id in application.config['DEVICES']:
-                    if application.config['DEVICES'][id]['status'] != 'normal':  # 在运行时另一个同线程开始了 此处线程退出
-                        return
+            if (v != 0 or e != 0) and (last_v == 0 and last_e == 0):
+                signalsPool.ROBOT_START.send(id, time=time.time())
+            if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
+                signalsPool.ROBOT_STOP.send(id, time=time.time())
 
-                    try:
-                        data = sc.recv(8)
-                        e = (data[2] * 256 + data[3]) / 100  # 文档中电压与电流 与实际相反
-                        v = (data[0] * 256 + data[1]) / 100
-                        t = (data[4] * 256 + data[5]) / 100
+            unique_id = application.config["DEVICES"][id]['uniqueid']
+            produce_status = application.config['DEVICES'][id]['produce_status']
+            robotId = application.config['DEVICES'][id]['robotId']
+            if 'productId' in application.config['DEVICES'][id]:
+                productId = application.config['DEVICES'][id]['productId']
+                last_v = v
+                last_e = e
+                collected_num_thershold += 1
+                if collected_num_thershold >= 100:
+                    one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
+                    one.save()
+                    collected_num_thershold = 0
 
-                        if (v != 0 or e != 0) and (last_v == 0 and last_e == 0):
-                            signalsPool.ROBOT_START.send(id, time=time.time())
-                        if (v == 0 or e == 0) and (last_v != 0 and last_e != 0):
-                            signalsPool.ROBOT_STOP.send(id, time=time.time())
+        except socket.error:
+            application.config['DEVICES'][id]['status'] = 'stop'
+            time.sleep(3)
+            print('Device{}连接异常 尝试重新连接'.format(id))
+            application.config['DEVICES'][id]['status'] = 'reconnecting'
+            try:
+                application.config['DEVICES'][id]['scoket'].connect((host, port))
+            except:
+                print('Device{}连接异常 尝试重新连接'.format(id))
+                application.config['DEVICES'][id]['status'] = 'stop'
 
-                    # print(data)
-                    # 插入数据库
-                        unique_id = application.config["DEVICES"][id]['uniqueid']
-                        produce_status = application.config['DEVICES'][id]['produce_status']
-                        robotId = application.config['DEVICES'][id]['robotId']
-                        productId = -1
-                        if 'productId' in application.config['DEVICES'][id]:
-                            productId = application.config['DEVICES'][id]['productId']
-                        one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
-
-                        last_v = v
-                        last_e = e
-                        if i >= 0:
-                            one.save()
-                            i = 0
-                        i += 1
-                    except Exception as err:
-                        sc.connect((host, port))
-                        time.sleep(60)
-            else:
-                print("Device{}已删除".format(id))
         except Exception as err:
             print('err:' + str(err))
-            application.config['DEVICES'][id]['status'] = 'stop'
-            print('Device{}连接异常 尝试重新连接{}次'.format(id, i))
-            time.sleep(0.5)
 
 
 # 新建并启动一个采集数据的线程

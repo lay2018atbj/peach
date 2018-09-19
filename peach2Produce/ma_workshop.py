@@ -23,12 +23,12 @@ def ma_workshop_dataview(id):
     edatas = []
     tdatas = []
     for col in data[::-1]:
-        vdatas.append([time.mktime(col.time.timetuple()) * 1000, col.voltage])
         edatas.append([time.mktime(col.time.timetuple()) * 1000, col.electricity])
+        vdatas.append([time.mktime(col.time.timetuple()) * 1000, col.voltage])
         tdatas.append([time.mktime(col.time.timetuple()) * 1000, col.temperature])
     data = dict()
-    data['v'] = vdatas
     data['e'] = edatas
+    data['v'] = vdatas
     data['t'] = tdatas
     return render_template('manage/workshopdataview.html', titlename='数据视图', id=id, thousandData=data)
 
@@ -52,7 +52,6 @@ def ma_workshop_getRobotModels():
         factoryId = data["factoryId"]
     if not factoryId:
         factoryId = 1
-    print(factoryId)
     robotModels = RobotInfo.query.filter_by(factoryId=factoryId).all()
     result = dict()
     for info in robotModels:
@@ -91,7 +90,7 @@ def ma_workshop_searchHistoryDatas():
         startTime = datetime.datetime.strptime(reTime['startTime'], '%Y-%m-%d %H:%M:%S')
         if reTime['endTime']:
             data = query.filter(CollectedDatas.time.between(startTime, datetime.datetime.strptime(reTime['endTime'],
-                                                                                                  '%Y-%m-%d %H:%M:%S'))).all()
+                                                                                          '%Y-%m-%d %H:%M:%S'))).all()
         else:
             reTime['endTime'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             data = query.filter(CollectedDatas.time.between(startTime,
