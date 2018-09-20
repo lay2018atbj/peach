@@ -61,15 +61,17 @@ def devRunSocket(NewDevice):
             unique_id = application.config["DEVICES"][id]['uniqueid']
             produce_status = application.config['DEVICES'][id]['produce_status']
             robotId = application.config['DEVICES'][id]['robotId']
+            productId = 0
             if 'productId' in application.config['DEVICES'][id]:
                 productId = application.config['DEVICES'][id]['productId']
-                last_v = v
-                last_e = e
-                collected_num_thershold += 1
-                if collected_num_thershold >= 100:
-                    one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
-                    one.save()
-                    collected_num_thershold = 0
+
+            last_v = v
+            last_e = e
+            collected_num_thershold += 1
+            if collected_num_thershold >= 100:
+                one = CollectedDatas(unique_id, productId, e, v, t, produce_status, robotId)
+                one.save()
+                collected_num_thershold = 0
 
         except socket.error:
             application.config['DEVICES'][id]['status'] = 'stop'
